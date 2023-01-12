@@ -7,55 +7,55 @@ To initialise npm
 
 
 
-  npm install --save-dev hardhat
+      npm install --save-dev hardhat
 
 
 Install hardhat
 
 
 
-  npx hardhat
+     npx hardhat
 
 
-  npm install --save-dev "hardhat@^2.12.5" "@nomicfoundation/hardhat-toolbox@^2.0.0"
+     npm install --save-dev "hardhat@^2.12.5" "@nomicfoundation/hardhat-toolbox@^2.0.0"
 
  
 Create hardhat file and download libraries
 
 
 
-  npx hardhat compile
+    npx hardhat compile
 
 
 Compile the contracts
 
 
 
-  npx hardhat test --network hardhat
-  npx hardhat test
+      npx hardhat test --network hardhat
+      npx hardhat test
 
 
 Run test script
 
 
-  npx hardhat run scripts/deploy.js
+    npx hardhat run scripts/deploy.js
 
 
 Run deploy.js this will return you the address of the deployed contract
 
 
 
-  npx hardhat node
+    npx hardhat node
 
 
 On another terminal run this code to produce a local blockchain giving you 10 accounts.
 Use ^C or Ctrl+C to exit blockchain.
 
-  npx hardhat run scripts/deploy.js --network localhost
+     npx hardhat run scripts/deploy.js --network localhost
 
 Going back to the previous terminal, running this will deploy the contract and give the details on the npx hardhat node terminal.
 
-  npm i dotenv
+    npm i dotenv
 
 
 To install .env functionality
