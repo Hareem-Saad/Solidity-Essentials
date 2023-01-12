@@ -8,10 +8,14 @@
 # Self note: How to connect to ganache
 1. Open ganache copy the rpc server link save it to env file as anything (in this case) GANACHE_URL
 2. Write this in hardhat.config.ts under networks
-        ganache: {
-            url: process.env.GANACHE_URL,
-            accounts: [`0x${process.env.PRIVATE_KEY_ONE}`],
-        },
+
+            ganache: {
+
+                url: process.env.GANACHE_URL,
+
+                accounts: [`0x${process.env.PRIVATE_KEY_ONE}`],
+
+            },
 3. Get private keys from ganache and save it in .env file
 4. run ```npx hardhat run scripts/deploy.ts --network ganache``` to deploy/interact
 
