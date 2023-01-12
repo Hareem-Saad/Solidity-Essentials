@@ -3,7 +3,7 @@
 - Encorporated Structs, Mappings, Enums, Events, Modifiers, Loops etc
 - Wrote tests for all functionality
 - Connected and Deoplyed to Ganache
-- made scripts for buying/transfering/withdrawing
+- Made scripts for buying/transfering/withdrawing
 
 # Sample Hardhat Project
 
