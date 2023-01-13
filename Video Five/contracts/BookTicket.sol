@@ -115,6 +115,7 @@ contract BookTicket {
     event logMsgData (bytes, uint);
 
     fallback() external payable {
+        console.log("here");
         emit logMsgData(msg.data, msg.value);
     }
 
