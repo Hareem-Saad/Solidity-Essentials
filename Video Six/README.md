@@ -1,3 +1,8 @@
+# What I did
+- Wrote test for a contract with and without withdraw pattern
+- Wrote deploy script for it for local host
+- Did a few oops exercises in solidity
+
 # Sample Hardhat Project
 
 This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
