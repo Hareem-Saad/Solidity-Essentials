@@ -122,7 +122,7 @@ contract BookTicket {
     event logAmount (uint);
 
     receive() payable external {
-        console.log("receive ");
+        console.log("receive");
         emit logAmount(msg.value);
     }
 }
