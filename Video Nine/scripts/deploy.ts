@@ -10,6 +10,8 @@ async function main() {
 
   console.log(`function getNum output: ${await contract.getNum()}`);
   console.log(`function getNumTest output: ${await contract.getNumTest()}`);
+  console.log(`function encode output: ${await contract.encode(7)}`);
+  console.log(`function encodePacked output: ${await contract.encodePacked(3)}`);
 
   console.log(`deployed to ${contract.address}`);
 }

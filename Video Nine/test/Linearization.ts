@@ -28,5 +28,39 @@ describe("Linearization", function () {
 
       expect(await contract.getNumTest()).to.equal(6);
     });
+
+    it("encode function should combine the number and the address", async function () {
+      const { contract, owner} = await loadFixture(deployLinearization);
+
+      // console.log(owner.address);
+
+      var addr = owner.address.slice(2);
+      let output = `0x000000000000000000000000${addr}0000000000000000000000000000000000000000000000000000000000000007`
+      // console.log(output);
+
+      expect(await contract.encode(7)).to.equal(output.toLowerCase());
+    });
+
+    it("encode function should combine the number and the address", async function () {
+      const { contract, owner} = await loadFixture(deployLinearization);
+
+      // console.log(owner.address);
+
+      var addr = owner.address.slice(2);
+      let output = `0x000000000000000000000000${addr}0000000000000000000000000000000000000000000000000000000000000007`
+      // console.log(output);
+
+      expect(await contract.encode(7)).to.equal(output.toLowerCase());
+    });
+    
+    it("encodePacked function should combine the number and the address", async function () {
+      const { contract, owner} = await loadFixture(deployLinearization);
+
+      // console.log(owner.address);
+      let output = `${owner.address}0000000000000000000000000000000000000000000000000000000000000007`
+      // console.log(output);
+
+      expect(await contract.encodePacked(7)).to.equal(output.toLowerCase());
+    });
   });
 });

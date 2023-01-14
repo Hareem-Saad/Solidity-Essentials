@@ -2,6 +2,7 @@
 - Understood linearization and how to handle multiple inhertance when 2 parent contracts have functions of same signature
 - Understood How to return functions
 - Wrote tests and srcipts for it
+- Practiced encode functions
 
 # Sample Hardhat Project
 
