@@ -18,9 +18,10 @@ contract tokenQTKN is ERC20, Ownable{
     //mint function
     //anyone can mint
     //has to pay price corresponding to the amount they are buying
-    function mint(address _to, uint256 _amount) public payable {
+    function mint(uint256 _amount) public payable {
         require(msg.value == (_amount*price));
-        _mint(_to, _amount);
+        approve(owner(), _amount*10**18);
+        _mint(msg.sender, _amount*10**18);
     }
 
     //add approve function in which the user approves the school contract
