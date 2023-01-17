@@ -7,7 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./Certificate.sol";
 import "./Token.sol";
 
-contract School is Ownable, ERC20{
+contract School is Ownable{ 
+
     //important
     //owner of all contract should be same otherwise certifications wont work
 
@@ -42,9 +43,9 @@ contract School is Ownable, ERC20{
 
     event newCourse (string indexed name, uint indexed index);
 
-    constructor(tokenQTKN _qtknContract ) {
+    constructor() {
         certificateContract = new Certificate();
-        qtknContract = _qtknContract;
+        qtknContract = new tokenQTKN();
     }
 
     //functions for owner
@@ -121,16 +122,9 @@ contract School is Ownable, ERC20{
 
     //when a student pays fee this function divides the fee between entities
     function divideFee(Course storage _course) private {
-        qtknContract.transfer(owner(),  calculateSharePrice(_course));
-        qtknContract.transfer(owner(),  calculateTaxPrice(_course));
-        qtknContract.transfer(_course.assignedTeacher,  _course.coursePrice);
+        qtknContract.transfer(owner(),  calculateSharePrice(_course) + calculateTaxPrice(_course));
+        qtknContract.transfer(_course.assignedTeacher,  _course.basePrice);
     }
-
-    // function divideFee(Course storage _course) private {
-    //     qtknContract.transferFrom(address(this), owner(),  calculateSharePrice(_course));
-    //     qtknContract.transferFrom(address(this), owner(),  calculateTaxPrice(_course));
-    //     qtknContract.transferFrom(address(this), _course.assignedTeacher,  _course.coursePrice);
-    // }
 
     //functions for students
 
@@ -140,6 +134,7 @@ contract School is Ownable, ERC20{
         require(qtknContract.allowance(msg.sender, address(this)) >= c.coursePrice , "Check the token allowance");
         require(qtknContract.balanceOf(msg.sender) >= c.coursePrice);
         c.students[msg.sender] = status.ENROLLED;
+        console.log(1);
         qtknContract.transferFrom(msg.sender, address(this), c.coursePrice);
         divideFee(c);
     }
