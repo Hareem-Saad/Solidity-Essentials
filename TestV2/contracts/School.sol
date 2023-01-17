@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./Certificate.sol";
 import "./Token.sol";
-
+//here token contract is diff
 contract School is Ownable{ 
 
     //important
