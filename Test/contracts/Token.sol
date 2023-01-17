@@ -23,5 +23,5 @@ contract tokenQTKN is ERC20, Ownable{
         _mint(_to, _amount);
     }
 
-    
+    //add approve function in which the user approves the school contract
 }

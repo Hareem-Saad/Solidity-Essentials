@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./Certificate.sol";
 import "./Token.sol";
 
-contract School is Ownable {
+contract School is Ownable, ERC20{
     //important
     //owner of all contract should be same otherwise certifications wont work
 
@@ -121,10 +121,16 @@ contract School is Ownable {
 
     //when a student pays fee this function divides the fee between entities
     function divideFee(Course storage _course) private {
-        qtknContract.transfer(owner(),  calculateSharePrice(_course)) ;
-        qtknContract.transfer(owner(),  calculateTaxPrice(_course)) ;
-        qtknContract.transfer(_course.assignedTeacher,  _course.coursePrice) ;
+        qtknContract.transfer(owner(),  calculateSharePrice(_course));
+        qtknContract.transfer(owner(),  calculateTaxPrice(_course));
+        qtknContract.transfer(_course.assignedTeacher,  _course.coursePrice);
     }
+
+    // function divideFee(Course storage _course) private {
+    //     qtknContract.transferFrom(address(this), owner(),  calculateSharePrice(_course));
+    //     qtknContract.transferFrom(address(this), owner(),  calculateTaxPrice(_course));
+    //     qtknContract.transferFrom(address(this), _course.assignedTeacher,  _course.coursePrice);
+    // }
 
     //functions for students
 
