@@ -131,6 +131,7 @@ contract School is Ownable {
     function enroll(uint _courseId) public {
         require(msg.sender != address(0), "user not viable");
         Course storage c = courses[_courseId];
+        require(qtknContract.allowance(msg.sender, address(this)) >= c.coursePrice , "Check the token allowance");
         require(qtknContract.balanceOf(msg.sender) >= c.coursePrice);
         c.students[msg.sender] = status.ENROLLED;
         qtknContract.transferFrom(msg.sender, address(this), c.coursePrice);
