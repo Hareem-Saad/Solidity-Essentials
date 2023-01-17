@@ -8,6 +8,8 @@ import "./Certificate.sol";
 import "./Token.sol";
 
 contract School is Ownable, ERC20{
+
+    uint256 public price = 0.01 ether;
     //important
     //owner of all contract should be same otherwise certifications wont work
 
@@ -17,7 +19,6 @@ contract School is Ownable, ERC20{
     uint256 baseTerm = 10; //schools share
     // uint256 sharingTerm = 0; //schools share set by the teacher should be >= baseTerm
     Certificate public certificateContract; //pointer to nft contract
-    tokenQTKN public qtknContract; //pointer to nft contract
 
     struct Course {
         uint256 courseId;
@@ -42,9 +43,8 @@ contract School is Ownable, ERC20{
 
     event newCourse (string indexed name, uint indexed index);
 
-    constructor(tokenQTKN _qtknContract ) {
+    constructor() ERC20("QTKN", "QTKN") {
         certificateContract = new Certificate();
-        qtknContract = _qtknContract;
     }
 
     //functions for owner
@@ -121,30 +121,30 @@ contract School is Ownable, ERC20{
 
     //when a student pays fee this function divides the fee between entities
     function divideFee(Course storage _course) private {
-        qtknContract.transfer(owner(),  calculateSharePrice(_course));
-        qtknContract.transfer(owner(),  calculateTaxPrice(_course));
-        qtknContract.transfer(_course.assignedTeacher,  _course.coursePrice);
+        transfer(owner(),  calculateSharePrice(_course) + calculateTaxPrice(_course));
+        transfer(_course.assignedTeacher,  _course.basePrice);
     }
-
-    // function divideFee(Course storage _course) private {
-    //     qtknContract.transferFrom(address(this), owner(),  calculateSharePrice(_course));
-    //     qtknContract.transferFrom(address(this), owner(),  calculateTaxPrice(_course));
-    //     qtknContract.transferFrom(address(this), _course.assignedTeacher,  _course.coursePrice);
-    // }
 
     //functions for students
 
     function enroll(uint _courseId) public {
         require(msg.sender != address(0), "user not viable");
         Course storage c = courses[_courseId];
-        require(qtknContract.allowance(msg.sender, address(this)) >= c.coursePrice , "Check the token allowance");
-        require(qtknContract.balanceOf(msg.sender) >= c.coursePrice);
+        // require(allowance(msg.sender, address(this)) >= c.coursePrice , "Check the token allowance");
+        require(balanceOf(msg.sender) >= c.coursePrice);
         c.students[msg.sender] = status.ENROLLED;
-        qtknContract.transferFrom(msg.sender, address(this), c.coursePrice);
+        console.log(1);
+        // transfer(address(this), c.coursePrice);
         divideFee(c);
     }
 
     function viewPrice(uint _courseId) public view returns(uint) {
         return courses[_courseId].coursePrice;
     }
+
+    function mint(address _to, uint256 _amount) public payable {
+        require(msg.value == (_amount*price));
+        _mint(_to, _amount*10**18);
+    }
+}
 }
