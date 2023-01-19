@@ -116,6 +116,7 @@ contract School is Ownable, ERC20{
 
     function enroll(uint _courseId) public {
         require(msg.sender != address(0), "user not viable");
+        require(_courseId < courses.length , "course id does not exist");
         Course storage c = courses[_courseId];
         // require(allowance(msg.sender, address(this)) >= c.coursePrice , "Check the token allowance");
         require(balanceOf(msg.sender) >= c.coursePrice);

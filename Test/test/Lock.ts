@@ -30,7 +30,7 @@ describe("School", function () {
     it("Should set the right price, tax, student status, owner", async function () {
       const { contract, price, school} = await loadFixture(deployOneYearLockFixture);
 
-      expect(await contract.price()).to.equal(price);
+      expect(await contract.price()).to.equal("10000000000000000");
       expect(await contract.tax()).to.equal(3);
       expect(await contract.statusDefault()).to.equal(0);
       expect(await contract.owner()).to.equal(school.address);
@@ -51,7 +51,7 @@ describe("School", function () {
 
         await contract.addTeacher(teacher.address);
 
-        await expect(contract.isTeacher()).to.equal(true);
+        expect( await contract.isTeacher(teacher.address)).to.equal(true);
       });
 
       it("Should revert with the right error if called from another account", async function () {
@@ -64,45 +64,104 @@ describe("School", function () {
           "Ownable: caller is not the owner"
         );
       });
+    });
 
-      it("Shouldn't fail if the unlockTime has arrived and the owner calls it", async function () {
-        const { contract, unlockTime } = await loadFixture(
+    describe("Create Course", function () {
+      it("Should revert with the right error if proposed price < minimum", async function () {
+        const { contract , teacher } = await loadFixture(
           deployOneYearLockFixture
         );
 
-        // Transactions are sent using the first signer by default
-        await time.increaseTo(unlockTime);
+        await contract.addTeacher(teacher.address);
 
-        await expect(contract.withdraw()).not.to.be.reverted;
+        await expect(contract.connect(teacher).createCourse("ICS", teacher.address, 0, 10)).to.be.revertedWith(
+          "price is lower than the minimum course price"
+        );
+      });
+
+      it("Should revert with the right error if proposed term < base term", async function () {
+        const { contract , teacher } = await loadFixture(
+          deployOneYearLockFixture
+        );
+
+        await contract.addTeacher(teacher.address);
+
+        await expect(contract.connect(teacher).createCourse("ICS", teacher.address, 50, 0)).to.be.revertedWith(
+          "share term is lower than the base term"
+        );
+      });
+
+      it("Should emit an event on new course addition", async function () {
+        const { contract , teacher } = await loadFixture(
+          deployOneYearLockFixture
+        );
+
+        await contract.addTeacher(teacher.address);
+
+        await expect(contract.connect(teacher).createCourse("ICS", teacher.address, 50, 10))
+          .to.emit(contract, "newCourse")
+          .withArgs('ICS', 0); // We accept any value as `when` arg
+      });
+    });
+  });
+
+  describe("Setters", function () {
+    describe("addTeacher", function () {
+      it("Should add the teacher to the mapping", async function () {
+        const { contract, teacher } = await loadFixture(deployOneYearLockFixture);
+
+        await contract.addTeacher(teacher.address);
+
+        expect( await contract.isTeacher(teacher.address)).to.equal(true);
+      });
+
+      it("Should revert with the right error if called from another account", async function () {
+        const { contract, teacher } = await loadFixture(deployOneYearLockFixture);
+
+        await contract.addTeacher(teacher.address);
+
+        // We use contract.connect() to send a transaction from another account
+        await expect(contract.connect(teacher).addTeacher(teacher.address)).to.be.revertedWith(
+          "Ownable: caller is not the owner"
+        );
       });
     });
 
-    describe("Events", function () {
-      it("Should emit an event on withdrawals", async function () {
-        const { contract, unlockTime, lockedAmount } = await loadFixture(
+    describe("Enroll", function () {
+      it("Should revert with the right error if course id does not exist", async function () {
+        const { contract , teacher, student } = await loadFixture(
           deployOneYearLockFixture
         );
 
-        await time.increaseTo(unlockTime);
+        await contract.addTeacher(teacher.address);
 
-        await expect(contract.withdraw())
-          .to.emit(contract, "Withdrawal")
-          .withArgs(lockedAmount, anyValue); // We accept any value as `when` arg
+        await expect(contract.connect(teacher).createCourse("ICS", teacher.address, 0, 10)).to.be.revertedWith(
+          "price is lower than the minimum course price"
+        );
       });
-    });
 
-    describe("Transfers", function () {
-      it("Should transfer the funds to the owner", async function () {
-        const { contract, unlockTime, lockedAmount, owner } = await loadFixture(
+      it("Should revert with the right error if proposed term < base term", async function () {
+        const { contract , teacher } = await loadFixture(
           deployOneYearLockFixture
         );
 
-        await time.increaseTo(unlockTime);
+        await contract.addTeacher(teacher.address);
 
-        await expect(contract.withdraw()).to.changeEtherBalances(
-          [owner, contract],
-          [lockedAmount, -lockedAmount]
+        await expect(contract.connect(teacher).createCourse("ICS", teacher.address, 50, 0)).to.be.revertedWith(
+          "share term is lower than the base term"
         );
+      });
+
+      it("Should emit an event on new course addition", async function () {
+        const { contract , teacher } = await loadFixture(
+          deployOneYearLockFixture
+        );
+
+        await contract.addTeacher(teacher.address);
+
+        await expect(contract.connect(teacher).createCourse("ICS", teacher.address, 50, 10))
+          .to.emit(contract, "newCourse")
+          .withArgs('ICS', 0); // We accept any value as `when` arg
       });
     });
   });
