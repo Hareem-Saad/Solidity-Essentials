@@ -84,18 +84,6 @@ contract School is Ownable{
         emit newCourse(_courseName, courses.length-1);
     }
 
-    function createCourse(string memory _courseName, address _teacher, uint256 _price) public onlyTeacher {
-        require(_price >= minimumCoursePrice, "price is lower than the minimum course price");
-        require(msg.sender != address(0), "user not viable");
-        Course storage c = courses.push();
-        c.name = _courseName;
-        c.assignedTeacher = _teacher;
-        c.basePrice = _price*10**18;
-        c.shareTerm = baseTerm;
-        c.coursePrice = calculatePrice(c);
-        emit newCourse(_courseName, courses.length-1);
-    }
-
     //once a student completes the course the teacher van graduate him
     //once the stutus is complete an nft is transfered to him
     function graduate(uint _courseIndex, address _student) public onlyTeacher {
@@ -134,12 +122,17 @@ contract School is Ownable{
         require(qtknContract.allowance(msg.sender, address(this)) >= c.coursePrice , "Check the token allowance");
         require(qtknContract.balanceOf(msg.sender) >= c.coursePrice);
         c.students[msg.sender] = status.ENROLLED;
-        console.log(1);
+        // console.log(1);
         qtknContract.transferFrom(msg.sender, address(this), c.coursePrice);
         divideFee(c);
     }
 
     function viewPrice(uint _courseId) public view returns(uint) {
         return courses[_courseId].coursePrice;
+    }
+
+    function mint(uint256 _amount) public payable {
+        require(msg.value == (_amount*qtknContract.price()), "Not enough ethers");
+        qtknContract.mint(msg.sender, _amount*10**18);
     }
 }

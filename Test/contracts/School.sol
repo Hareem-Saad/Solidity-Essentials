@@ -5,7 +5,6 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./Certificate.sol";
-import "./Token.sol";
 
 contract School is Ownable, ERC20{
 
@@ -83,18 +82,6 @@ contract School is Ownable, ERC20{
         emit newCourse(_courseName, courses.length-1);
     }
 
-    function createCourse(string memory _courseName, address _teacher, uint256 _price) public onlyTeacher {
-        require(_price >= minimumCoursePrice, "price is lower than the minimum course price");
-        require(msg.sender != address(0), "user not viable");
-        Course storage c = courses.push();
-        c.name = _courseName;
-        c.assignedTeacher = _teacher;
-        c.basePrice = _price*10**18;
-        c.shareTerm = baseTerm;
-        c.coursePrice = calculatePrice(c);
-        emit newCourse(_courseName, courses.length-1);
-    }
-
     //once a student completes the course the teacher van graduate him
     //once the stutus is complete an nft is transfered to him
     function graduate(uint _courseIndex, address _student) public onlyTeacher {
@@ -133,7 +120,7 @@ contract School is Ownable, ERC20{
         // require(allowance(msg.sender, address(this)) >= c.coursePrice , "Check the token allowance");
         require(balanceOf(msg.sender) >= c.coursePrice);
         c.students[msg.sender] = status.ENROLLED;
-        console.log(1);
+        // console.log(1);
         // transfer(address(this), c.coursePrice);
         divideFee(c);
     }
@@ -142,9 +129,9 @@ contract School is Ownable, ERC20{
         return courses[_courseId].coursePrice;
     }
 
-    function mint(address _to, uint256 _amount) public payable {
+    function mint(uint256 _amount) public payable {
         require(msg.value == (_amount*price));
-        _mint(_to, _amount*10**18);
+        _mint(msg.sender, _amount*10**18);
     }
 }
-}
+
