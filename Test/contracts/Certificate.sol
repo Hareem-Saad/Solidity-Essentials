@@ -4,6 +4,7 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
+import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
@@ -18,7 +19,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * the Metadata extension, but not including the Enumerable extension, which is available separately as
  * {ERC721Enumerable}.
  */
-contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
+abstract contract EERC721 is Context, ERC165, IERC721, IERC721Metadata {
     using Address for address;
     using Strings for uint256;
 
@@ -112,7 +113,7 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
      * @dev See {IERC721-approve}.
      */
     function approve(address to, uint256 tokenId) public virtual override {
-        address owner = ERC721.ownerOf(tokenId);
+        address owner = ownerOf(tokenId);
         require(to != owner, "ERC721: approval to current owner");
 
         require(
@@ -221,7 +222,7 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
      * - `tokenId` must exist.
      */
     function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool) {
-        address owner = ERC721.ownerOf(tokenId);
+        address owner = ownerOf(tokenId);
         return (spender == owner || isApprovedForAll(owner, spender) || getApproved(tokenId) == spender);
     }
 
@@ -304,7 +305,7 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
         _beforeTokenTransfer(owner, address(0), tokenId, 1);
 
         // Update ownership in case tokenId was transferred by `_beforeTokenTransfer` hook
-        owner = ERC721.ownerOf(tokenId);
+        owner = ownerOf(tokenId);
 
         // Clear approvals
         delete _tokenApprovals[tokenId];
@@ -333,7 +334,7 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
      * Emits a {Transfer} event.
      */
     function _transfer(address from, address to, uint256 tokenId) internal virtual {
-        require(ERC721.ownerOf(tokenId) == from, "ERC721: transfer from incorrect owner");
+        require(ERC721(tokenId) == from, "ERC721: transfer from incorrect owner");
         require(to != address(0), "ERC721: transfer to the zero address");
 
         _beforeTokenTransfer(from, to, tokenId, 1);
@@ -469,13 +470,30 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
     function _afterTokenTransfer(address from, address to, uint256 firstTokenId, uint256 batchSize) internal virtual {}
 }
 
-contract Certificate is ERC721, Ownable {
+contract Certificate is EERC721, Ownable {
     uint256 public id = 0;
 
-    constructor() ERC721 ("QTKN", "QTKN") {}
+    constructor() EERC721 ("QTKN", "QTKN") {}
 
     function mint (address _to) public onlyOwner {
         id += 1;
         _safeMint(_to, id);
+    }
+}
+
+
+// import '@openzeppelin/contracts/access/Ownable.sol';
+
+contract NFT is Ownable, ERC721URIStorage{
+    uint256 public tokenCounter = 0;
+    string private uri = 'https://gateway.pinata.cloud/ipfs/QmUwGLS68RfgDLxdVGKUyFs3ypX88jkxSJaX2U2TXPa2BD/1.json';
+    constructor() ERC721("Q-Course", "QCRS") {
+
+    }
+
+    function mint(address _to) public onlyOwner {
+        tokenCounter += 1;
+        _mint(_to, tokenCounter);
+        _setTokenURI(tokenCounter, uri);
     }
 }
