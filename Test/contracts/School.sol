@@ -14,7 +14,7 @@ contract School is Ownable, ERC20{
 
     uint16 public tax = 3; //default tax
     status public statusDefault = status.NOT_ENROLLED; //default student status
-    uint256 minimumCoursePrice = 0; //minimum course fee
+    uint256 minimumCoursePrice = 10; //minimum course fee
     uint256 baseTerm = 10; //schools share
     // uint256 sharingTerm = 0; //schools share set by the teacher should be >= baseTerm
     Certificate public certificateContract; //pointer to nft contract
@@ -29,7 +29,7 @@ contract School is Ownable, ERC20{
         mapping (address => status) students;
     }
 
-    mapping (address => bool) isTeacher;
+    mapping (address => bool) public isTeacher;
     mapping (uint256 => Course) courses_by_id;
     Course[] courses; //stores all the courses
 
