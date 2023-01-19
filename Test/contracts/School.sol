@@ -5,6 +5,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./Certificate.sol";
+import "./CourseNFT.sol";
 
 contract School is Ownable, ERC20{
 
@@ -18,6 +19,7 @@ contract School is Ownable, ERC20{
     uint256 baseTerm = 10; //schools share
     // uint256 sharingTerm = 0; //schools share set by the teacher should be >= baseTerm
     Certificate public certificateContract; //pointer to nft contract
+    NFT public cnft; //course nft
 
     struct Course {
         uint256 courseId;
@@ -44,6 +46,7 @@ contract School is Ownable, ERC20{
 
     constructor() ERC20("QTKN", "QTKN") {
         certificateContract = new Certificate();
+        cnft = new NFT();
     }
 
     //functions for owner
@@ -79,6 +82,7 @@ contract School is Ownable, ERC20{
         c.basePrice = _price*10**18;
         c.shareTerm = _shareTerm;
         c.coursePrice = calculatePrice(c);
+        // cnft.
         emit newCourse(_courseName, courses.length-1);
     }
 
