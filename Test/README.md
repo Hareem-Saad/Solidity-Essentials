@@ -1,3 +1,9 @@
+# Contracts
+- School/ERC20 contract: 0x51363a255ae0A700AB3CcE4143a5a164D1C1a84a
+- Certificate contract address: 0xef6E898ff1425Fd838521E11C74B01cbfb4BAA64
+- CourseNFT contract address: 0x2cAF4b35A7F9d81a514d20e8199D6733836E6903
+
+run ```npx hardhat run scripts/deploy.ts``` to run on localhost 
 # Q-Solutions-Test
 
 Create following smart contracts:
