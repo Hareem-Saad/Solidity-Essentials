@@ -9,7 +9,8 @@ import "./Certificate.sol";
 
 contract School is Ownable, ERC20{
 
-    uint256 public price = 0.01 ether;
+    uint256 public price = 0.0001 ether;
+    // uint256 public price = 0.01 ether;
     //important
     //owner of all contract should be same otherwise certifications wont work
 
@@ -19,7 +20,7 @@ contract School is Ownable, ERC20{
     uint256 baseTerm = 10; //schools share
     // uint256 sharingTerm = 0; //schools share set by the teacher should be >= baseTerm
     Certificate public certificateContract; //pointer to nft contract
-    NFT public cnft; //course nft
+    CourseNFT public cnft; //course nft
 
     struct Course {
         uint256 courseId;
@@ -46,7 +47,7 @@ contract School is Ownable, ERC20{
 
     constructor() ERC20("QTKN", "QTKN") {
         certificateContract = new Certificate();
-        cnft = new NFT();
+        cnft = new CourseNFT();
     }
 
     //functions for owner
@@ -82,7 +83,7 @@ contract School is Ownable, ERC20{
         c.basePrice = _price*10**18;
         c.shareTerm = _shareTerm;
         c.coursePrice = calculatePrice(c);
-        // cnft.
+        cnft.mint(_teacher);
         emit newCourse(_courseName, courses.length-1);
     }
 

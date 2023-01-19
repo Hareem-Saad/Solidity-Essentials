@@ -300,7 +300,7 @@ abstract contract EERC721 is Context, ERC165, IERC721, IERC721Metadata {
      * Emits a {Transfer} event.
      */
     function _burn(uint256 tokenId) internal virtual {
-        address owner = ERC721.ownerOf(tokenId);
+        address owner = ownerOf(tokenId);
 
         _beforeTokenTransfer(owner, address(0), tokenId, 1);
 
@@ -334,13 +334,13 @@ abstract contract EERC721 is Context, ERC165, IERC721, IERC721Metadata {
      * Emits a {Transfer} event.
      */
     function _transfer(address from, address to, uint256 tokenId) internal virtual {
-        require(ERC721(tokenId) == from, "ERC721: transfer from incorrect owner");
+        require(ownerOf(tokenId) == from, "ERC721: transfer from incorrect owner");
         require(to != address(0), "ERC721: transfer to the zero address");
 
         _beforeTokenTransfer(from, to, tokenId, 1);
 
         // Check that tokenId was not transferred by `_beforeTokenTransfer` hook
-        require(ERC721.ownerOf(tokenId) == from, "ERC721: transfer from incorrect owner");
+        require(ownerOf(tokenId) == from, "ERC721: transfer from incorrect owner");
 
         // Clear approvals from the previous owner
         delete _tokenApprovals[tokenId];
@@ -368,7 +368,7 @@ abstract contract EERC721 is Context, ERC165, IERC721, IERC721Metadata {
      */
     function _approve(address to, uint256 tokenId) internal virtual {
         _tokenApprovals[tokenId] = to;
-        emit Approval(ERC721.ownerOf(tokenId), to, tokenId);
+        emit Approval(ownerOf(tokenId), to, tokenId);
     }
 
     /**
@@ -484,7 +484,7 @@ contract Certificate is EERC721, Ownable {
 
 // import '@openzeppelin/contracts/access/Ownable.sol';
 
-contract NFT is Ownable, ERC721URIStorage{
+contract CourseNFT is Ownable, ERC721URIStorage{
     uint256 public tokenCounter = 0;
     string private uri = 'https://gateway.pinata.cloud/ipfs/QmUwGLS68RfgDLxdVGKUyFs3ypX88jkxSJaX2U2TXPa2BD/1.json';
     constructor() ERC721("Q-Course", "QCRS") {

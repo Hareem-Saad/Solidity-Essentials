@@ -2,7 +2,12 @@ import { ethers } from "hardhat";
 import { School, School__factory } from "../typechain-types";
 
 async function main() {
-  const [school, teacher, student] = await ethers.getSigners();
+  let provider = new ethers.providers.JsonRpcProvider(`https://eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`)
+
+  // Load the wallet to deploy the contract with
+  let school = new ethers.Wallet(`${process.env.FIRST_PRIVATE_KEY}`, provider);
+  let teacher = new ethers.Wallet(`${process.env.SECOND_PRIVATE_KEY}`, provider);
+  let student = new ethers.Wallet(`${process.env.THIRD_PRIVATE_KEY}`, provider);
 
   const price = ethers.utils.parseEther("0.01");
 
@@ -23,9 +28,6 @@ async function main() {
   await (await contract.addTeacher(teacher.address)).wait();
 
   console.log(`Teacher creates course`);
-  // await contract.connect(teacher)["create_course(string,address,uint256)"]
-  //await (await contract.connect(teacher)["create_course(string,address,uint256)"].call("ICS", teacher.address, "50")).wait()
-  
   await (await contract.connect(teacher).createCourse("ICS", teacher.address, 50, 10)).wait()
 
   console.log(`Teacher gets course nft with id: ${await courseNftContract.connect(teacher).tokenURI(1)}`);
