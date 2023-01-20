@@ -17,28 +17,15 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     string private _name;
     string private _symbol;
 
-    /**
-     * @dev Sets the values for {name} and {symbol}.
-     *
-     * All two of these values are immutable: they can only be set once during
-     * construction.
-     */
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
     }
 
-    /**
-     * @dev Returns the name of the token.
-     */
     function name() public view virtual override returns (string memory) {
         return _name;
     }
 
-    /**
-     * @dev Returns the symbol of the token, usually a shorter version of the
-     * name.
-     */
     function symbol() public view virtual override returns (string memory) {
         return _symbol;
     }
@@ -171,20 +158,20 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     function _afterTokenTransfer(address from, address to, uint256 amount) internal virtual {}
 }
 
-contract tokenQTKN is ERC20, Ownable{
-    //price
-    uint256 public price = 0.01 ether;
+// contract tokenQTKN is ERC20, Ownable{
+//     //price
+//     uint256 public price = 0.01 ether;
 
-    //creation of token
-    constructor() ERC20("QTKN", "QTKN") {}
+//     //creation of token
+//     constructor() ERC20("QTKN", "QTKN") {}
 
-    //mint function
-    //anyone can mint
-    //has to pay price corresponding to the amount they are buying
-    function mint(address _to, uint256 _amount) public onlyOwner() {
-        approve(owner(), _amount*10**18);
-        _mint(_to, _amount*10**18);
-    }
+//     //mint function
+//     //anyone can mint
+//     //has to pay price corresponding to the amount they are buying
+//     function mint(address _to, uint256 _amount) public onlyOwner() {
+//         approve(owner(), _amount*10**18);
+//         _mint(_to, _amount*10**18);
+//     }
 
-    //add approve function in which the user approves the school contract
-}
+//     //add approve function in which the user approves the school contract
+// }
