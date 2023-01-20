@@ -2,14 +2,14 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+// import "@openzeppelin/contracts/access/Ownable.sol";
+// import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./Certificate.sol";
-// import "./CourseNFT.sol";
+import "./Token.sol";
 
 contract School is Ownable, ERC20{
 
-    uint256 public price = 0.0001 ether;
+    uint256 public price = 0.01 ether;
     // uint256 public price = 0.01 ether;
     //important
     //owner of all contract should be same otherwise certifications wont work
@@ -33,8 +33,8 @@ contract School is Ownable, ERC20{
     }
 
     mapping (address => bool) public isTeacher;
-    mapping (uint256 => Course) courses_by_id;
-    Course[] courses; //stores all the courses
+    // mapping (uint256 => Course) public courses_by_id;
+    Course[] public courses; //stores all the courses
 
     modifier onlyTeacher() {
         require (isTeacher[msg.sender] == true, "not authorized to create course");
@@ -124,7 +124,7 @@ contract School is Ownable, ERC20{
         require(_courseId < courses.length , "course id does not exist");
         Course storage c = courses[_courseId];
         // require(allowance(msg.sender, address(this)) >= c.coursePrice , "Check the token allowance");
-        require(balanceOf(msg.sender) >= c.coursePrice);
+        require(balanceOf(msg.sender) >= c.coursePrice, "not enough tokens");
         c.students[msg.sender] = status.ENROLLED;
         // console.log(1);
         // transfer(address(this), c.coursePrice);
