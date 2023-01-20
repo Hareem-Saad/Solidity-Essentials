@@ -9,7 +9,7 @@ async function main() {
   let teacher = new ethers.Wallet(`${process.env.SECOND_PRIVATE_KEY}`, provider);
   let student = new ethers.Wallet(`${process.env.THIRD_PRIVATE_KEY}`, provider);
 
-  const price = ethers.utils.parseEther("0.01");
+  const price = ethers.utils.parseEther("0.5");
 
   const Contract:School__factory = await ethers.getContractFactory("School");
   const contract:School = await Contract.deploy();
@@ -32,8 +32,8 @@ async function main() {
 
   console.log(`Teacher gets course nft with id: ${await courseNftContract.connect(teacher).tokenURI(1)}`);
   
-  console.log(`Student buys 100 tokens`);
-  await (await contract.connect(student).mint("100", { value: price })).wait();
+  console.log(`Student buys 50 tokens`);
+  await (await contract.connect(student).mint("50", { value: price })).wait();
 
   console.log(`Student buys a course`);
   await (await contract.connect(student).enroll(0)).wait();

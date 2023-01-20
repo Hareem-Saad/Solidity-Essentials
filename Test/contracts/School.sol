@@ -7,18 +7,26 @@ pragma solidity >=0.7.0 <0.9.0;
 import "./Certificate.sol";
 import "./Token.sol";
 
+/**
+ * @title School
+ * @author Hareem-Saad
+ * @notice owner of all contracts should be same otherwise certifications wont work
+ * @notice owner of all token contracts is this contract
+ * School can add teachers
+ * School has set the minimum course price --that no teacher can set a course price below it
+ * School has set the minimum baseTerm -- i.e the minimum percentage of school's share
+ * When course is created an nft is minted to the teacher
+ * When student graduates an nft is minted to the student
+ */
+
 contract School is Ownable, ERC20{
 
     uint256 public price = 0.01 ether;
     // uint256 public price = 0.01 ether;
-    //important
-    //owner of all contract should be same otherwise certifications wont work
-
     uint16 public tax = 3; //default tax
     status public statusDefault = status.NOT_ENROLLED; //default student status
     uint256 minimumCoursePrice = 10; //minimum course fee
     uint256 baseTerm = 10; //schools share
-    // uint256 sharingTerm = 0; //schools share set by the teacher should be >= baseTerm
     Certificate public certificateContract; //pointer to nft contract
     CourseNFT public cnft; //course nft
 
@@ -33,8 +41,7 @@ contract School is Ownable, ERC20{
     }
 
     mapping (address => bool) public isTeacher;
-    // mapping (uint256 => Course) public courses_by_id;
-    Course[] public courses; //stores all the courses
+    Course[] public courses; //stores all the courses the index is the course id
 
     modifier onlyTeacher() {
         require (isTeacher[msg.sender] == true, "not authorized to create course");
@@ -71,7 +78,15 @@ contract School is Ownable, ERC20{
 
     //functions for teacher
 
-    //create course
+    /**
+     * createCourse
+     * @param _courseName -- the course name 
+     * @param _teacher -- the assigned teacher this can be themselves or any other approved teacher
+     * @param _price -- the price for course the teacher sets must be above minimum price
+     * @param _shareTerm -- the percentage the teacher wants to give to the school must not be lesser than base term
+     * 
+     * course price is calculated by basePrice (teacher's fee) + tax% + share%
+     */
     function createCourse(string memory _courseName, address _teacher, uint256 _price, uint8 _shareTerm) public onlyTeacher {
         require(_price >= minimumCoursePrice, "price is lower than the minimum course price");
         require(_shareTerm >= baseTerm, "share term is lower than the base term");
@@ -119,6 +134,7 @@ contract School is Ownable, ERC20{
 
     //functions for students
 
+    //course price is calculated by basePrice (teacher's fee) + tax% + share%
     function enroll(uint _courseId) public {
         require(msg.sender != address(0), "user not viable");
         require(_courseId < courses.length , "course id does not exist");

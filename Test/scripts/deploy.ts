@@ -4,7 +4,7 @@ import { School, School__factory } from "../typechain-types";
 async function main() {
   const [school, teacher, student] = await ethers.getSigners();
 
-  const price = ethers.utils.parseEther("0.01");
+  const price = ethers.utils.parseEther("1");
 
   const Contract:School__factory = await ethers.getContractFactory("School");
   const contract:School = await Contract.deploy();
@@ -28,7 +28,7 @@ async function main() {
   
   await (await contract.connect(teacher).createCourse("ICS", teacher.address, 50, 10)).wait()
 
-  console.log(`Teacher gets course nft with id: ${await courseNftContract.connect(teacher).tokenURI(1)}`);
+  console.log(`Teacher gets course nft with uri: ${await courseNftContract.connect(teacher).tokenURI(1)}`);
   
   console.log(`Student buys 100 tokens`);
   await (await contract.connect(student).mint("100", { value: price })).wait();
